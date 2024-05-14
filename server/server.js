@@ -1,10 +1,12 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const { pool } = require("./database");
+const cors = require("cors");
 dotenv.config();
 const PORT = process.env.PORT ?? 8080;
 const app = express();
 
+app.use(cors());
 app.get("/todos", async (request, response) => {
   const email = "erick@yahoo.com";
   try {
