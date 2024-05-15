@@ -1,4 +1,5 @@
 import React from "react";
+import Logo from "./Logo";
 
 const ListHeader = ({ listName }) => {
   const signOut = () => {
@@ -10,7 +11,11 @@ const ListHeader = ({ listName }) => {
   };
   return (
     <div className="list-header">
-      <h1> {listName}</h1>
+      <div className="logo-name">
+        <Logo />
+        <h1> {listName}</h1>
+      </div>
+
       <div className="button-container">
         <button className="create" onClick={() => addNew()}>
           ADD NEW

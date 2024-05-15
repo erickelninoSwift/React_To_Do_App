@@ -7,19 +7,22 @@ const PORT = process.env.PORT ?? 8080;
 const app = express();
 
 app.use(cors());
-app.get("/todos", async (request, response) => {
+app.get("/todos/:userEmail", async (request, response) => {
   const email = "erick@yahoo.com";
+  const { userEmail } = request.params;
   try {
     const getAlldata = await pool.query(
       "SELECT * FROM todos WHERE user_email = $1",
-      [email]
+      [userEmail]
     );
-    response.status(200).json({
+    return response.status(200).json({
       data: getAlldata.rows,
     });
-    console.log(getAlldata.rows[0]);
   } catch (error) {
     console.log(`Error : ${error}`);
+    return response.status(404).json({
+      message: `Error found ${error}`,
+    });
   }
 });
 

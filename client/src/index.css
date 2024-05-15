@@ -37,3 +37,51 @@ body {
   font-size: 10px;
   background-color: transparent;
 }
+
+.list-item {
+  width: 100%;
+  margin: 20px 0;
+  border-radius: 10px;
+  padding: 5px;
+  box-shadow: rgba(0, 0, 0, 0.09) 0 0 0 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit {
+  border: 2.5px solid green;
+  color: green;
+  text-transform: uppercase;
+}
+
+.delete {
+  border: 2.5px solid red;
+  color: red;
+  text-transform: uppercase;
+}
+
+.edit:hover {
+  background-color: lightgreen;
+}
+
+.delete:hover {
+  background-color: lightpink;
+}
+
+.edit:active {
+  border: 1.5px solid rgb(106, 149, 106);
+  color: rgb(230, 235, 230);
+  background-color: rgb(91, 132, 30);
+}
+.delete:active {
+  border: 1.5px solid rgb(152, 25, 25);
+  color: rgb(242, 241, 241);
+  background-color: rgb(152, 80, 80);
+}
+
+.logo-name {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
