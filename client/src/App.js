@@ -1,6 +1,7 @@
 import ListHeader from "./components/ListHeader";
 import { useEffect, useState } from "react";
 import ListItems from "./components/ListItems";
+import Modal from "./components/Modal";
 const App = () => {
   const [todos, setTodos] = useState([]);
   const [userEmail, setUserEmail] = useState("erick@yahoo.com");

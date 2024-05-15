@@ -1,5 +1,6 @@
 import React from "react";
 import Logo from "./Logo";
+import Modal from "./Modal";
 
 const ListHeader = ({ listName }) => {
   const signOut = () => {
@@ -15,7 +16,6 @@ const ListHeader = ({ listName }) => {
         <Logo />
         <h1> {listName}</h1>
       </div>
-
       <div className="button-container">
         <button className="create" onClick={() => addNew()}>
           ADD NEW
@@ -24,6 +24,7 @@ const ListHeader = ({ listName }) => {
           SIGN OUT
         </button>
       </div>
+      <Modal />
     </div>
   );
 };
