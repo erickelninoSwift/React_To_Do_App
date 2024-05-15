@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "./Logo";
 import Modal from "./Modal";
 
 const ListHeader = ({ listName }) => {
+  const [mymodal, setShowModal] = useState(false);
   const signOut = () => {
     console.log("signout");
   };
 
-  const addNew = () => {
-    console.log("signout");
+  const showModal = () => {
+    setShowModal(!mymodal);
   };
   return (
     <div className="list-header">
@@ -17,14 +18,14 @@ const ListHeader = ({ listName }) => {
         <h1> {listName}</h1>
       </div>
       <div className="button-container">
-        <button className="create" onClick={() => addNew()}>
+        <button className="create" onClick={() => showModal()}>
           ADD NEW
         </button>
         <button className="signout" onClick={() => signOut()}>
           SIGN OUT
         </button>
       </div>
-      <Modal />
+      {mymodal && <Modal mode={"create"} dismissModal={setShowModal} />}
     </div>
   );
 };

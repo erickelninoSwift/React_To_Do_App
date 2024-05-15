@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import CLose from "./CLose";
-const Modal = () => {
-  const mode = "create";
+const Modal = ({ mode, dismissModal }) => {
   const editMode = mode === "edit" ? true : false;
   const [data, setData] = useState({
     user_email: "",
@@ -34,7 +33,7 @@ const Modal = () => {
       <div className="modal">
         <div className="form-title-container">
           <h3>Let's {mode} your task!</h3>
-          <button>
+          <button onClick={() => dismissModal(() => false)}>
             <CLose />
           </button>
         </div>
@@ -45,7 +44,7 @@ const Modal = () => {
             maxLength={35}
             placeholder="Please your tasks goes here"
             name="title"
-            value={""}
+            value={data.title}
             onChange={(e) => handleInputChange(e)}
           />
           <br />
@@ -55,6 +54,7 @@ const Modal = () => {
             type="range"
             min={0}
             max={100}
+            value={data.progress}
             onChange={(e) => handleRange(e)}
             name="progress"
           />
