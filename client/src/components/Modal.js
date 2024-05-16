@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import CLose from "./CLose";
-const Modal = ({ mode, dismissModal }) => {
+const Modal = ({ mode, dismissModal, task = {} }) => {
   const editMode = mode === "edit" ? true : false;
   const [data, setData] = useState({
-    user_email: "",
-    title: "",
-    progress: "",
+    user_email: task.user_email ?? "",
+    title: task.title ?? "",
+    progress: task.progress ?? "",
     date: editMode ? "" : new Date(),
   });
+
+  const postData = () => {};
 
   const handleInputChange = (event) => {
     event.preventDefault();
@@ -26,7 +28,7 @@ const Modal = ({ mode, dismissModal }) => {
   };
 
   const handleSubmit = () => {
-    console.log("submit data");
+    postData();
   };
   return (
     <div className="overlay">
