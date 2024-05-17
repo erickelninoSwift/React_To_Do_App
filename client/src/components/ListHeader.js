@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import Logo from "./Logo";
 import Modal from "./Modal";
 
-const ListHeader = ({ listName }) => {
+const ListHeader = ({ listName, getAlldata }) => {
   const [mymodal, setShowModal] = useState(false);
+
   const signOut = () => {
     console.log("signout");
   };
@@ -25,7 +26,13 @@ const ListHeader = ({ listName }) => {
           SIGN OUT
         </button>
       </div>
-      {mymodal && <Modal mode={"create"} dismissModal={setShowModal} />}
+      {mymodal && (
+        <Modal
+          mode={"create"}
+          getAllcurrentData={getAlldata}
+          dismissModal={setShowModal}
+        />
+      )}
     </div>
   );
 };

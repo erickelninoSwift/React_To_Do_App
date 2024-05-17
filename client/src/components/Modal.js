@@ -1,15 +1,52 @@
 import React, { useState } from "react";
 import CLose from "./CLose";
-const Modal = ({ mode, dismissModal, task = {} }) => {
+import env from "react-dotenv";
+
+const Modal = ({ mode, dismissModal, task, getAllcurrentData }) => {
   const editMode = mode === "edit" ? true : false;
   const [data, setData] = useState({
-    user_email: task.user_email ?? "",
-    title: task.title ?? "",
-    progress: task.progress ?? "",
-    date: editMode ? "" : new Date(),
+    user_email: editMode ? task.user_email : "jackpot@yahoo.com",
+    title: task ? task.title : "",
+    progress: editMode ? task.progress : 50,
+    date: editMode ? task.data : new Date(),
   });
+  console.log(data);
+  const postData = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:8080/todos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        console.log("Worked");
+        dismissModal(() => false);
+        getAllcurrentData();
+      }
+      console.log(response);
+    } catch (error) {
+      console.log("error");
+    }
+  };
 
-  const postData = () => {};
+  const editData = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:8080/todos/${task.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        console.log("Data was edited");
+        dismissModal(() => false);
+        getAllcurrentData();
+      }
+    } catch (error) {
+      console.log(`Error found : ${error}`);
+    }
+  };
 
   const handleInputChange = (event) => {
     event.preventDefault();
@@ -23,13 +60,10 @@ const Modal = ({ mode, dismissModal, task = {} }) => {
     e.preventDefault();
     const { value } = e.target;
     setData((data) => {
-      return { ...data, progress: value };
+      return { ...data, progress: Number(value) };
     });
   };
 
-  const handleSubmit = () => {
-    postData();
-  };
   return (
     <div className="overlay">
       <div className="modal">
@@ -63,7 +97,7 @@ const Modal = ({ mode, dismissModal, task = {} }) => {
           <input
             className={mode}
             type="submit"
-            onClick={() => handleSubmit()}
+            onClick={editMode ? (e) => editData(e) : (e) => postData(e)}
           />
         </form>
       </div>
