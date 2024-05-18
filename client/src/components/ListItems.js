@@ -6,7 +6,7 @@ import Modal from "./Modal";
 // dotenv.config();
 const ListItems = ({ task, getAlldata }) => {
   const [mymodal, setMymodal] = useState(false);
-  const { title, id } = task;
+  const { title, id, progress } = task;
   const shwoMycurrentModal = () => {
     setMymodal(() => !mymodal);
   };
@@ -30,7 +30,10 @@ const ListItems = ({ task, getAlldata }) => {
         style={{ display: "flex", alignItems: "center" }}
       >
         <TickIcon />
-        <p className="task-title">{title}</p>
+        <p className="task-title" style={{ width: "200px" }}>
+          {title}
+        </p>
+        <Progress progress={progress} />
       </div>
       <div className="button-container">
         <button className="edit" onClick={() => shwoMycurrentModal()}>

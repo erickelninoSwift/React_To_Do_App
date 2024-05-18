@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import CLose from "./CLose";
-// const dotenv = require("dotenv");
-// dotenv.config();
+import { useCookies } from "react-cookie";
 
 const Modal = ({ mode, dismissModal, task, getAllcurrentData }) => {
+  const [cookies, setCookie, removeCookie] = useCookies(null);
   const editMode = mode === "edit" ? true : false;
   const [data, setData] = useState({
-    user_email: editMode ? task.user_email : "jackpot@yahoo.com",
+    user_email: editMode ? task.user_email : cookies.Email,
     title: task ? task.title : "",
     progress: editMode ? task.progress : 50,
     date: editMode ? task.data : new Date(),

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
 // const dotenv = require("dotenv");
 // dotenv.config();
@@ -48,6 +48,9 @@ const Auth = () => {
       const { email, token } = dataReceived;
       setCookie("Email", email);
       setCookie("AuthToken", token);
+      setEmail(() => "");
+      setPassword(() => "");
+      setRePassword(() => "");
       window.location.reload();
     }
   };

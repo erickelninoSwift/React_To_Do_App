@@ -14,7 +14,10 @@ app.use(cors());
 app.get("/todos/:userEmail", async (request, response) => {
   const { userEmail } = request.params;
   try {
-    const getAlldata = await pool.query("SELECT * FROM todos");
+    const getAlldata = await pool.query(
+      "SELECT * FROM todos WHERE user_email = $1",
+      [userEmail]
+    );
     return response.status(200).json({
       data: getAlldata.rows,
     });
@@ -122,15 +125,30 @@ app.post("/login", async (request, response) => {
   const { email, password } = request.body;
 
   try {
-    const allUserData = (await pool.query("SELECT * from users")).rows;
-    const checkUserexist = await allUserData.find(
-      (user) => user.email === email && user.hashed_password === password
+    const allUserData = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
     );
-    if (checkUserexist) {
-      return response.status(200).json({
-        data: "Logged in with success",
+
+    if (!allUserData.rows.length) {
+      return response.json({
+        detail: "user was not found please enter correct email or register",
       });
     }
+    const passwordCompare = await bcrypt.compare(
+      password,
+      allUserData.rows[0].hashed_password
+    );
+    if (!passwordCompare) {
+      return response.json({ detail: "Please provide correct password" });
+    }
+
+    const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
+
+    return response.json({
+      email: allUserData.rows[0].email,
+      token,
+    });
   } catch (error) {
     console.error(error);
   }
@@ -139,6 +157,18 @@ app.post("/login", async (request, response) => {
 app.get("/users", async (request, response) => {
   try {
     const allUsers = await pool.query("SELECT * FROM users");
+    console.log(allUsers.rows);
+    return response.status(200).json({
+      users: allUsers.rows,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.get("/todos", async (request, response) => {
+  try {
+    const allUsers = await pool.query("SELECT * FROM todos");
     console.log(allUsers.rows);
     return response.status(200).json({
       users: allUsers.rows,
