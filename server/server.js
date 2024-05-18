@@ -2,7 +2,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const { pool } = require("./database");
 const { v4: uuidV4 } = require("uuid");
+const bcrypt = require("bcrypt");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 dotenv.config();
 const PORT = process.env.PORT;
 const app = express();
@@ -12,10 +14,6 @@ app.use(cors());
 app.get("/todos/:userEmail", async (request, response) => {
   const { userEmail } = request.params;
   try {
-    // const getAlldata = await pool.query(
-    //   "SELECT * FROM todos WHERE user_email = $1",
-    //   [userEmail]
-    // );
     const getAlldata = await pool.query("SELECT * FROM todos");
     return response.status(200).json({
       data: getAlldata.rows,
@@ -100,30 +98,37 @@ app.delete("/todos/:id", async (request, response) => {
 
 // Sign up
 app.post("/signup", async (request, response) => {
-  const { user_email, password } = request.body;
+  const { email, password } = request.body;
+  const salt = bcrypt.genSaltSync(10);
+  const hashedpassword = bcrypt.hashSync(password, salt);
   try {
     await pool.query(
       "INSERT INTO users (email, hashed_password) VALUES ($1 , $2)",
-      [user_email, password]
+      [email, hashedpassword]
     );
+    const token = jwt.sign({ email }, "secret", { expiresIn: "1h" });
+    return response.json({ email, token });
   } catch (error) {
     console.error(error);
+    if (error) {
+      return response.json({ detail: error.detail });
+    }
   }
 });
 
 // Login
 
 app.post("/login", async (request, response) => {
-  const { user_email, password } = request.body;
+  const { email, password } = request.body;
 
   try {
     const allUserData = (await pool.query("SELECT * from users")).rows;
     const checkUserexist = await allUserData.find(
-      (user) => user.email === user_email && user.hashed_password === password
+      (user) => user.email === email && user.hashed_password === password
     );
     if (checkUserexist) {
       return response.status(200).json({
-        user: checkUserexist,
+        data: "Logged in with success",
       });
     }
   } catch (error) {
@@ -131,6 +136,17 @@ app.post("/login", async (request, response) => {
   }
 });
 
+app.get("/users", async (request, response) => {
+  try {
+    const allUsers = await pool.query("SELECT * FROM users");
+    console.log(allUsers.rows);
+    return response.status(200).json({
+      users: allUsers.rows,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+});
 app.listen(PORT, () => {
   console.log("server is running on port: ", PORT);
 });

@@ -1,29 +1,54 @@
 import React, { useState } from "react";
 import "./style.css";
+// const dotenv = require("dotenv");
+// dotenv.config();
+import { useCookies } from "react-cookie";
+
 const Auth = () => {
   const [islogin, setIsLogin] = useState(true);
   const [error, setError] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [rePassword, setRePassword] = useState(null);
+  const [cookies, setCookie, removeCookie] = useCookies(null);
 
+  const emailField = (e) => {
+    e.preventDefault();
+
+    setEmail(() => e.target.value);
+  };
+
+  const passwordField = (e) => {
+    e.preventDefault();
+
+    setPassword(() => e.target.value);
+  };
+
+  const handleConfirmPass = (e) => {
+    e.preventDefault();
+
+    setRePassword(() => e.target.value);
+  };
   const handleSubmit = async (e, endpoint) => {
     e.preventDefault();
     if (!islogin && password !== rePassword) {
       setError("Please Make sure password match");
       return;
     }
-    try {
-      await fetch(`http://localhost:8080/${endpoint}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "",
-      });
-    } catch (error) {}
+    const response = await fetch(`http://localhost:8080/${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-    if ((islogin && !email) || !password) {
-      setError("Please make sure you have filled all fields");
-      return;
+    const dataReceived = await response.json();
+    if (dataReceived.detail) {
+      setError(dataReceived.detail);
+    } else {
+      const { email, token } = dataReceived;
+      setCookie("Email", email);
+      setCookie("AuthToken", token);
+      window.location.reload();
     }
   };
 
@@ -42,23 +67,26 @@ const Auth = () => {
             name="email"
             required
             placeholder="email address"
+            onChange={(e) => emailField(e)}
           />
           <input
             type="password"
             name="password"
             required
             placeholder="Password"
+            onChange={(e) => passwordField(e)}
           />
           {!islogin && (
             <input
               type="password"
-              name="password"
+              name="Repassword"
               required
               placeholder="confirm password"
+              onChange={(e) => handleConfirmPass(e)}
             />
           )}
           <button
-            style={{ height: "40px", borderRadius: "10px" }}
+            style={{ height: "40px", borderRadius: "10px", cursor: "pointer" }}
             type="submit"
             onClick={(e) => handleSubmit(e, islogin ? "login" : "signup")}
           >

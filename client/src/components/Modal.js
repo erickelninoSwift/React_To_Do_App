@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CLose from "./CLose";
-import env from "react-dotenv";
+// const dotenv = require("dotenv");
+// dotenv.config();
 
 const Modal = ({ mode, dismissModal, task, getAllcurrentData }) => {
   const editMode = mode === "edit" ? true : false;
